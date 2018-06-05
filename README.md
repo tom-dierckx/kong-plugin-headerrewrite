@@ -14,6 +14,10 @@ was made available as an open-source platform in 2015. Under active
 development, Kong is now used in production at hundreds of organizations from
 startups, to large enterprises and government departments.
 
-The headerrewrite plugin rewrites header containing backend urls with gateway url.
-
 [Website Kong][https://getkong.org/]
+
+## Building luarock from source
+
+## Installing luarock in kong
+
+## Testing the plugin

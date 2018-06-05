@@ -16,27 +16,24 @@ local HeaderrewriteHandler = BasePlugin:extend()
 local function get_upstream_url()
     -- return ngx.ctx.api.upstream_url
     local upstream_url = ngx.ctx.api.upstream_url
-    local upstream_url_parts = url.parse(upstream_url)
-    if upstream_url_parts.scheme == "https" and not upstream_url_parts.port then
-        upstream_url = "https://" .. upstream_url_parts.host .. ":443" .. upstream_url_parts.path
-        if tostring(upstream_url_parts.query) ~= "" then
-            upstream_url = upstream_url .. "?" .. tostring(upstream_url_parts.query)
-        end
-    end
-    return upstream_url
+   local upstream_url_parts = url.parse(upstream_url)
+   if (upstream_url_parts.scheme == "https" and upstream_url_parts.port == 443) or (upstream_url_parts.scheme == "http" and upstream_url_parts.port == 80) then
+      upstream_url = upstream_url_parts.scheme .."://" .. upstream_url_parts.host .. upstream_url_parts.path
+      if tostring(upstream_url_parts.query) ~= "" then
+         upstream_url= upstream_url .. "?" .. tostring(upstream_url_parts.query)
+      end
+   end
+   return upstream_url
 end
 
 local function get_downstream_url()
     local api = ngx.ctx.api
-    ngx.log(ngx.DEBUG, "API Value:" .. ngx.var.request_uri)
-    if ngx.var.request_uri then
-        local request_uri =
-            ngx.var.scheme .. "://" .. ngx.var.host .. ":" .. ngx.var.server_port .. ngx.var.request_uri .. "/"
-        ngx.log(ngx.DEBUG, "Downstream url:" .. request_uri)
-        return request_uri
+	local request_uri = ""
+    if api.uris then
+	-- always return the gateway address via https
+		request_uri = "https://" .. ngx.var.host .. api.uris[1]
     end
-    ngx.log(ngx.DEBUG, "Returning nil")
-    return nil
+    return request_uri
 end
 
 ---------------------------
