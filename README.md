@@ -16,8 +16,47 @@ startups, to large enterprises and government departments.
 
 [Website Kong][https://getkong.org/]
 
-## Building luarock from source
+## Building and installing luarock from source
 
-## Installing luarock in kong
+The basic information for building and installing is in this readme. More information about kong plugin development can be found [here][https://getkong.org/docs/0.11.x/plugin-development/].
 
+### Building
+Installing the plugin locally using the .rockspec in current directory
+```
+$ luarocks make
+```
+
+Create a rock from 
+```
+$ luarocks pack kong-plugin-headerrewrite-<version>.rockspec
+```
+
+### Installing
+
+Installing the rock image in the local LuaRocks tree (directory with all LuaRocks installed modules) .
+```
+$ luarocks install kong-plugin-headerrewrite-<version>.src.rock
+```
+Enabeling the package in kong by adding the name to the custom_plugins parameter in the Kong config file.
+```
+custom_plugins = headerrewrite
+```
+
+### Configuration
+
+Configuring the plugin is straightforward, you can add it on top of an [API][api-object] by executing the following request on your Kong server:
+
+```bash
+$ curl -X POST http://kong:8001/apis/{api}/plugins \
+--data "name=headerrewrite"
+```
+
+`api`: The `id` or `name` of the API that this plugin configuration will target
+
+form parameter            | required     | description
+---                       | ---          | ---
+`name`                    | *required*   | The name of the plugin to use, in this case: `headerrewrite`
+`config.headers`          | *optional*   | A comma seperated list of headers on which we are going to enable the url rewriting logic, default header is location
+----
 ## Testing the plugin
+
