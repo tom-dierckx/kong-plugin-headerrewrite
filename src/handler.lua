@@ -28,14 +28,16 @@ end
 
 local function get_downstream_url()
     local api = ngx.ctx.api
-	local request_uri = ""
-    if api.uris then
-	-- always return the gateway address via https
-		request_uri = "https://" .. ngx.var.host .. api.uris[1]
+    ngx.log(ngx.DEBUG, "API Value:" .. ngx.var.request_uri)
+    if ngx.var.request_uri then
+        local request_uri =
+            ngx.var.scheme .. "://" .. ngx.var.host .. ":" .. ngx.var.server_port .. ngx.var.request_uri .. "/"
+        ngx.log(ngx.DEBUG, "Downstream url:" .. request_uri)
+        return request_uri
     end
-    return request_uri
+    ngx.log(ngx.DEBUG, "Returning nil")
+    return nil
 end
-
 ---------------------------
 -- Plugin implementation --
 ---------------------------
