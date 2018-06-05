@@ -1,5 +1,5 @@
 package = "kong-plugin-headerrewrite"
-version = "0.0-6"
+version = "0.0-1"
 supported_platforms = {"linux", "macosx"}
 source = {
   url = "git://github.com/tom-dierckx/kong-plugin-headerrewrite",
