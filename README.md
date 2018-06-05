@@ -1,5 +1,6 @@
 # kong-plugin-headerrewrite
-The repo containing a lua plugin for the kong-ce Gateway 0.11.0. This plugin will rewrite the response headers with API Gateway URL's.
+This repo contains a lua plugin for the kong-ce Gateway 0.11.0. 
+This plugin will rewrite the response headers with API Gateway URL's.
 By replacing the upstream url with the downstream url the consuming service does not get conflicting url's.
 
 ## Kong
@@ -21,19 +22,19 @@ startups, to large enterprises and government departments.
 The basic information for building and installing is in this readme. More information about kong plugin development can be found [here][https://getkong.org/docs/0.11.x/plugin-development/].
 
 ### Building
-Installing the plugin locally using the .rockspec in current directory
+Installing the plugin locally using the .rockspec in current directory.
 ```
 $ luarocks make
 ```
 
-Create a rock from 
+Create a rock from local source.
 ```
 $ luarocks pack kong-plugin-headerrewrite-<version>.rockspec
 ```
 
 ### Installing
 
-Installing the rock image in the local LuaRocks tree (directory with all LuaRocks installed modules) .
+Installing the rock image in the local LuaRocks tree (directory with all LuaRocks installed modules).
 ```
 $ luarocks install kong-plugin-headerrewrite-<version>.src.rock
 ```
