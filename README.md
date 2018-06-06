@@ -119,7 +119,7 @@ Server: kong/0.11.0
 
 {"created_at":1528272380000,"config":{"headers":["pleasereplace","location"]},"id":"c3f9008d-d06c-42f1-9cc7-947582275527","name":"headerrewrite","api_id":"a8826efc-8224-4bfe-8678-019ac43667b2","enabled":true}
 ```
-If we repeat the get request from previous step we now see all headers configured *pleasereplace* and *location*.
+If we repeat the get request from previous step we now see all headers configured *pleasereplace* and *location* containing the Gateway url.
 
 ```
 $ curl -i -X GET --url http://localhost:8000/testing/hello
@@ -138,4 +138,3 @@ Via: kong/0.11.0
 
 {"name":"apple","url":"http://localhost:9090","price":30}
 ```
-
