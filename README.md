@@ -61,3 +61,81 @@ form parameter            | required     | description
 ----
 ## Testing the plugin
 
+Demo project added and is run using ballerina.
+The backend will be running on port 9090 and will return backend URL's in multiple headers.
+Info on running ballerina can be found on the [ballerina website][https://ballerina.io/]
+
+```
+ballerina run testing/demobackend/program.bal
+```
+This will start a service that responds a couple of headers
+
+```
+$ curl -i -X GET --url http://localhost:9090/hello
+HTTP/1.1 200 OK
+Location: http://localhost:9090/lalalala
+notreplace: http://localhost:9090/lalalala
+pleasereplace: http://localhost:9090/lalalala
+Content-Type: application/json
+content-length: 57
+server: ballerina/0.970.0
+date: Tue, 5 Jun 2018 13:00:19 +0200
+
+{"name":"apple","url":"http://localhost:9090","price":30}
+```
+We can then register the service as an api in the Kong gateway.
+
+```
+$ curl -i -X POST --url http://localhost:8001/apis/ --data 'name=example' --data 'upstream_url=http://localhost:9090/' --data 'strip_uri=true' --data 'uris=/testing'
+```
+We then validate that the service is also responding via the API gateway.
+
+```
+$ curl -i -X GET --url http://localhost:8000/testing/hello
+HTTP/1.1 200 OK
+Location: http://localhost:9090/lalalala
+notreplace: http://localhost:9090/lalalala
+pleasereplace: http://localhost:9090/lalalala
+Content-Type: application/json
+content-length: 57
+server: ballerina/0.970.0
+date: Tue, 5 Jun 2018 13:00:19 +0200
+
+{"name":"apple","url":"http://localhost:9090","price":30}
+```
+
+The plugin is not enabled yet, so we can see the backend URL's in the Location, notreplace and pleasereplace header.
+
+We will now enable the plugin on the ***example*** api.
+```
+$ curl -i -X POST --url http://localhost:8001/apis/example/plugins/ --data 'name=headerrewrite' --data 'config.headers=pleasereplace,location'
+HTTP/1.1 201 Created
+Date: Wed, 06 Jun 2018 08:06:20 GMT
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Access-Control-Allow-Origin: *
+Server: kong/0.11.0
+
+{"created_at":1528272380000,"config":{"headers":["pleasereplace","location"]},"id":"c3f9008d-d06c-42f1-9cc7-947582275527","name":"headerrewrite","api_id":"a8826efc-8224-4bfe-8678-019ac43667b2","enabled":true}
+```
+If we repeat the get request from previous step we now see all headers configured *pleasereplace* and *location*.
+
+```
+$ curl -i -X GET --url http://localhost:8000/testing/hello
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 57
+Connection: keep-alive
+location: http://localhost:8000/testing/hello/lalalala
+notreplace: http://localhost:9090/lalalala
+pleasereplace: http://localhost:8000/testing/hello/lalalala
+server: ballerina/0.970.0
+date: Wed, 6 Jun 2018 10:06:23 +0200
+X-Kong-Upstream-Latency: 7
+X-Kong-Proxy-Latency: 1
+Via: kong/0.11.0
+
+{"name":"apple","url":"http://localhost:9090","price":30}
+```
+
