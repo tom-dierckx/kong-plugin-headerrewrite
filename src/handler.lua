@@ -6,16 +6,9 @@ local url = require "kong.plugins.headerrewrite.url"
 
 local HeaderrewriteHandler = BasePlugin:extend()
 
---- Function which returns a Kong compliant upstream URL.
--- This function returns a Kong compliant upstream URL.
--- When https protocol is used and no port is defined, Kong (v0.9.3) adds port 443 to the URL;
--- therefore this function will have to do the same in order to be able to make comparisons.
--- see also : https://github.com/Mashape/kong/issues/869
--- @function get_upstream_url
--- @return kong compliant upstream URL
+-- Kong 11 removes the ports if default values are used for http (80) ans https (443), remove them in these cases for comparison
 local function get_upstream_url()
-    -- return ngx.ctx.api.upstream_url
-    local upstream_url = ngx.ctx.api.upstream_url
+   local upstream_url = ngx.ctx.api.upstream_url
    local upstream_url_parts = url.parse(upstream_url)
    if (upstream_url_parts.scheme == "https" and upstream_url_parts.port == 443) or (upstream_url_parts.scheme == "http" and upstream_url_parts.port == 80) then
       upstream_url = upstream_url_parts.scheme .."://" .. upstream_url_parts.host .. upstream_url_parts.path
@@ -27,7 +20,6 @@ local function get_upstream_url()
 end
 
 local function get_downstream_url()
-    local api = ngx.ctx.api
     ngx.log(ngx.DEBUG, "API Value:" .. ngx.var.request_uri)
     if ngx.var.request_uri then
         local request_uri =
