@@ -17,15 +17,11 @@ startups, to large enterprises and government departments.
 
 [Website Kong](https://getkong.org/)
 
-## Building and installing luarocks from source
+## Building a binary for distribution and installing the plugin
 
 The basic information for building and installing is in this readme. More information about kong plugin development can be found [here](https://getkong.org/docs/0.11.x/plugin-development/).
 
 ### Building
-Installing the plugin locally using the .rockspec in current directory.
-```
-$ luarocks make
-```
 
 Create a rock from local source, this is a zip package containing the source for distribution to other systems.
 ```
@@ -34,7 +30,12 @@ $ luarocks pack kong-plugin-headerrewrite-<version>.rockspec
 
 ### Installing
 
-Installing the rock image in the local LuaRocks tree (directory with all LuaRocks installed modules).
+Installing the plugin locally using the .rockspec in current directory.
+```
+$ luarocks make
+```
+
+Installing the previously created rock image in the local LuaRocks tree (directory with all LuaRocks installed modules).
 ```
 $ luarocks install kong-plugin-headerrewrite-<version>.src.rock
 ```
@@ -42,6 +43,8 @@ Enabeling the package in kong by adding the name to the custom_plugins parameter
 ```
 custom_plugins = headerrewrite
 ```
+
+More detailed information about luarocks in general can be found [here](https://luarocks.org/).
 
 ### Configuration
 
