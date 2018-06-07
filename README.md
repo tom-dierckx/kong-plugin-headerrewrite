@@ -60,7 +60,7 @@ $ curl -X POST http://kong:8001/apis/{api}/plugins \
 form parameter            | required     | description
 ---                       | ---          | ---
 `name`                    | *required*   | The name of the plugin to use, in this case: `headerrewrite`
-`config.headers`          | *optional*   | A comma seperated list of headers on which we are going to enable the url rewriting logic, default header is location
+`config.headers`          | *optional*   | A comma seperated list of headers on which we are going to enable the url rewriting logic, default header is ***location***
 ----
 ## Testing the plugin
 
