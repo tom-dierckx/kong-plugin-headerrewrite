@@ -15,11 +15,11 @@ was made available as an open-source platform in 2015. Under active
 development, Kong is now used in production at hundreds of organizations from
 startups, to large enterprises and government departments.
 
-[Website Kong][https://getkong.org/]
+[Website Kong](https://getkong.org/)
 
-## Building and installing luarock from source
+## Building and installing luarocks from source
 
-The basic information for building and installing is in this readme. More information about kong plugin development can be found [here][https://getkong.org/docs/0.11.x/plugin-development/].
+The basic information for building and installing is in this readme. More information about kong plugin development can be found [here](https://getkong.org/docs/0.11.x/plugin-development/).
 
 ### Building
 Installing the plugin locally using the .rockspec in current directory.
@@ -27,7 +27,7 @@ Installing the plugin locally using the .rockspec in current directory.
 $ luarocks make
 ```
 
-Create a rock from local source.
+Create a rock from local source, this is a zip package containing the source for distribution to other systems.
 ```
 $ luarocks pack kong-plugin-headerrewrite-<version>.rockspec
 ```
@@ -63,7 +63,7 @@ form parameter            | required     | description
 
 Demo project added and is run using ballerina.
 The backend will be running on port 9090 and will return backend URL's in multiple headers.
-Info on running ballerina can be found on the [ballerina website][https://ballerina.io/]
+Info on running ballerina can be found on the [ballerina website](https://ballerina.io/)
 
 ```
 ballerina run testing/demobackend/program.bal
