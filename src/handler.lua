@@ -16,6 +16,7 @@ local function get_upstream_url()
          upstream_url= upstream_url .. "?" .. tostring(upstream_url_parts.query)
       end
    end
+   ngx.log(ngx.DEBUG, "Upstream url:" .. upstream_url)
    return upstream_url
 end
 
@@ -42,10 +43,11 @@ function HeaderrewriteHandler:header_filter(config)
     HeaderrewriteHandler.super.header_filter(self)
     if config.headers then
         for k,v in pairs(config.headers) do 
-            ngx.log(ngx.DEBUG, "Header found:" .. v)
             header_value = ngx.header[v]
             if header_value then
+                ngx.log(ngx.DEBUG, "Found header:" .. stringy.strip(header_value):lower())
                 ngx.header[v] = header_filter.execute(stringy.strip(header_value):lower(), get_upstream_url(), get_downstream_url())
+                ngx.req.set_header(v, header_filter.execute(stringy.strip(header_value):lower(), get_upstream_url(), get_downstream_url()))
             else 
                 ngx.log(ngx.DEBUG, "Header not found in response:")
             end
