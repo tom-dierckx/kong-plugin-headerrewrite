@@ -6,6 +6,10 @@ local url = require "kong.plugins.headerrewrite.url"
 
 local HeaderrewriteHandler = BasePlugin:extend()
 
+local function isempty(s)
+    return s == nil or s == ''
+end
+
 -- Kong 11 removes the ports if default values are used for http (80) ans https (443), remove them in these cases for comparison
 local function get_upstream_url()
    local upstream_url = ngx.ctx.api.upstream_url
@@ -22,11 +26,17 @@ end
 
 local function get_downstream_url()
     ngx.log(ngx.DEBUG, "API Value:" .. ngx.var.request_uri)
+    -- Loadbalancer fix
+    forwarded_proto = ngx.req.get_headers()['x-forwarded-proto']
     if ngx.var.request_uri then
-        local request_uri =
-            ngx.var.scheme .. "://" .. ngx.var.host .. ":" .. ngx.var.server_port .. ngx.var.request_uri .. "/"
-        ngx.log(ngx.DEBUG, "Downstream url:" .. request_uri)
-        return request_uri
+        if isempty(forwarded_proto) then
+            ngx.log(ngx.DEBUG, "X-Forwarded-Proto is leeg")
+            return ngx.var.scheme .. "://" .. ngx.var.host .. ":" .. ngx.var.server_port .. ngx.var.request_uri .. "/"
+        else
+            -- only support for http / https on the default ports
+            ngx.log(ngx.DEBUG, "X-Forwarded-Proto gevonden")
+            return forwarded_proto .. "://" .. ngx.var.host .. ":" .. ngx.var.request_uri .. "/"
+        end
     end
     ngx.log(ngx.DEBUG, "Returning nil")
     return nil
@@ -45,7 +55,7 @@ function HeaderrewriteHandler:header_filter(config)
         for k,v in pairs(config.headers) do 
             header_value = ngx.header[v]
             if header_value then
-                ngx.log(ngx.DEBUG, "Found header:" .. stringy.strip(header_value):lower())
+                ngx.log(ngx.DEBUG, "Found header:" .. v .. ":" .. stringy.strip(header_value):lower())
                 ngx.header[v] = header_filter.execute(stringy.strip(header_value):lower(), get_upstream_url(), get_downstream_url())
                 ngx.req.set_header(v, header_filter.execute(stringy.strip(header_value):lower(), get_upstream_url(), get_downstream_url()))
             else 
