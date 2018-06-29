@@ -35,7 +35,7 @@ local function get_downstream_url()
         else
             -- only support for http / https on the default ports
             ngx.log(ngx.DEBUG, "X-Forwarded-Proto gevonden")
-            return forwarded_proto .. "://" .. ngx.var.host .. ":" .. ngx.var.request_uri .. "/"
+            return forwarded_proto .. "://" .. ngx.var.host .. ngx.var.request_uri .. "/"
         end
     end
     ngx.log(ngx.DEBUG, "Returning nil")
