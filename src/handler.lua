@@ -32,7 +32,7 @@ local function get_downstream_url()
     if api.uris then
         if isempty(forwarded_proto) then
             ngx.log(ngx.DEBUG, "X-Forwarded-Proto is leeg")
-            return ngx.var.scheme .. "://" .. ngx.var.host .. ":" .. ngx.var.server_port .. api.uris[1]
+            return ngx.var.scheme .. "://" .. ngx.var.host .. ":" .. ngx.var.server_port .. api.uris[1] .. "/"
         else
             -- only support for http / https on the default ports
             ngx.log(ngx.DEBUG, "X-Forwarded-Proto gevonden")
