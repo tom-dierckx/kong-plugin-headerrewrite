@@ -27,15 +27,16 @@ end
 local function get_downstream_url()
     ngx.log(ngx.DEBUG, "API Value:" .. ngx.var.request_uri)
     -- Loadbalancer fix
+    local api = ngx.ctx.api
     forwarded_proto = ngx.req.get_headers()['x-forwarded-proto']
-    if ngx.var.request_uri then
+    if api.uris then
         if isempty(forwarded_proto) then
             ngx.log(ngx.DEBUG, "X-Forwarded-Proto is leeg")
-            return ngx.var.scheme .. "://" .. ngx.var.host .. ":" .. ngx.var.server_port .. ngx.var.request_uri .. "/"
+            return ngx.var.scheme .. "://" .. ngx.var.host .. ":" .. ngx.var.server_port .. api.uris[1]
         else
             -- only support for http / https on the default ports
             ngx.log(ngx.DEBUG, "X-Forwarded-Proto gevonden")
-            return forwarded_proto .. "://" .. ngx.var.host .. ngx.var.request_uri .. "/"
+            return forwarded_proto .. "://" .. ngx.var.host .. api.uris[1] .. "/"
         end
     end
     ngx.log(ngx.DEBUG, "Returning nil")
